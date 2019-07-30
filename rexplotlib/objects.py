@@ -1,0 +1,79 @@
+from __future__ import annotations
+import uproot
+import numpy as np
+from dataclasses import dataclass
+
+
+@dataclass
+class Sample:
+    """ defines a physics sample """
+    name: str = "none"
+    signature: str = "none"
+    color: str = "black"
+    tex: str = "none"
+
+
+@dataclass
+class NuisPar:
+    """ defines a nuisance paramter from TRExFitter """
+    name: str = "none"
+    mean: float = 0
+    minus: float = 0
+    plus: float = 0
+    category: str = "none"
+    title: str = "none"
+
+
+@dataclass
+class Histogram:
+    """ defines a histogram from a TRExFitter file """
+    hfile: str
+    region: str
+    sample: Sample
+    unit: str = ""
+    mpl_title: str = ""
+    signature: str = ""
+    postfit: bool = False
+
+    def __post_init__(self):
+        pfp = "" if not self.postfit else "h_"
+        pfs = "" if not self.postfit else "_postFit"
+        regionsig = f"{self.region}_" if not self.postfit else ""
+        self.signature = f"{pfp}{regionsig}{self.sample.signature}{pfs}"
+        try:
+            self.uproothist = uproot.open(self.hfile).get(self.signature)
+            self.content = self.uproothist.values
+            self.content[self.content < 0] = 1.0e-6
+        except KeyError:
+            self.uproothist = None
+            self.content = None
+
+    def __bool__(self):
+        return self.uproothist is not None
+
+    def __call__(self):
+        return self.uproothist
+
+    @property
+    def sumw2(self):
+        return self.uproothist.variances
+
+    @property
+    def error(self):
+        return np.sqrt(self.sumw2)
+
+    @property
+    def bins(self):
+        return self.uproothist.edges
+
+    @property
+    def bin_centers(self):
+        return (self.bins[1:] + self.bins[:-1]) * 0.5
+
+    @property
+    def bin_width(self):
+        return round(self.bins[-1] - self.bins[-2], 2)
+
+    def has_uniform_bins(self):
+        diffs = np.ediff1d(self.bins)
+        return np.allclose(diffs, diffs[0])

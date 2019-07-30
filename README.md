@@ -1,0 +1,3 @@
+# rexplotlib
+
+Install with pip.
