@@ -1,7 +1,8 @@
 from __future__ import annotations
 import uproot
 import numpy as np
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 
 @dataclass
@@ -52,6 +53,45 @@ class NuisPar:
     plus: float = 0
     category: str = "none"
     title: str = "none"
+
+
+@dataclass
+class Template:
+    """Defines a template for generation by WtStat
+
+    Attributes
+    ----------
+    var : str
+       variable (branch) from the tree
+    region : List[str]
+       list of regions where the template was calculated
+    xmin : float
+       axis range minimum
+    xmax: float
+       axis range maximum
+    nbins : int
+       number of bins
+    use_region_binning : bool
+       for wt-stat usage
+    axis_title : str
+       axis title for TRExFitter
+    mpl_title : str
+       axis title for matplotlib
+    is_aux : bool
+       for wt-stat usagse
+    unit : str
+       unit as a string (e.g. GeV)
+    """
+    var: str = ""
+    regions: List[str] = field(default_factory=list)
+    xmin: float = 0
+    xmax: float = 0
+    nbins: int = 0
+    use_region_binning: bool = False
+    axis_title: str = ""
+    mpl_title: str = ""
+    is_aux: bool = False
+    unit: str = ""
 
 
 @dataclass

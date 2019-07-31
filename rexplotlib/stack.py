@@ -1,4 +1,4 @@
-from rexplotlib.objects import Sample, Histogram
+from rexplotlib.objects import Sample, Histogram, Template
 from rexplotlib.utils import draw_ratio_with_line, draw_atlas_label, set_labels, shrink_pdf
 from pathlib import PosixPath
 import matplotlib.pyplot as plt
@@ -62,7 +62,7 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
     draw_ratio_with_line(axr, data, expected_sum, expected_err)
     axr.set_ylim([0.8, 1.2])
     axr.set_yticks([0.9, 1.0, 1.1])
-    axr.set_xlabel(histograms[0].mpl_title, horizontalalignment="right", x=1.0)
+    axr.set_xlabel(data.mpl_title, horizontalalignment="right", x=1.0)
 
     ax.legend(loc="upper right")
     handles, labels = ax.get_legend_handles_labels()
@@ -142,6 +142,14 @@ def postfit_histograms(args, fit_name, region, samples):
     return histograms, band
 
 
+def split_region_str(region):
+    splits = region.split("_")
+    if len(splits) == 1:
+        return (region, "bdt_response")
+    else:
+        return (splits[0], "_".join(splits[1:]))
+
+
 def run_stacks(args):
     """Given command line arguments generate stack plots
 
@@ -154,7 +162,7 @@ def run_stacks(args):
         yaml_config = yaml.load(f, Loader=yaml.FullLoader)
     samples = [Sample(**d) for d in yaml_config["samples"]]
     samples.reverse()
-
+    templates = {t["var"]: Template(**t) for t in yaml_config["templates"]}
     outd = "."
     if args.out_dir:
         outd = args.out_dir
@@ -177,7 +185,10 @@ def run_stacks(args):
             regions.append(region)
 
     for region in regions:
+        raw_region, template_variable = split_region_str(region)
         data, histograms, band = prefit_histograms(args, fit_name, region, samples)
+        data.unit = templates[template_variable].unit
+        data.mpl_title = templates[template_variable].mpl_title
         fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
         out_name = f"{outd}/preFit_{region}.pdf"
         fig.savefig(out_name)
