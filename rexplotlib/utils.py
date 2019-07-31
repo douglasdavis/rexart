@@ -2,6 +2,10 @@ import numpy as np
 from pathlib import PosixPath
 import os
 import subprocess
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 def draw_ratio_with_line(ax, data, mc_sum, mc_err, yline=1.0, autoxscale=True):
@@ -48,6 +52,7 @@ def shrink_pdf(file_path):
         "-dNOPAUSE -dQUIET -dBATCH "
         "-sOutputFile=temp.pdf {in_file}"
     )
+    log.debug(f"shrinking {file_path} via gs")
     in_file = PosixPath(file_path).absolute()
     in_name = os.fspath(in_file)
     proc = subprocess.Popen(command.format(in_file=in_file), shell=True)

@@ -53,28 +53,32 @@ import argparse
 from rexplotlib.pulls import run_pulls
 from rexplotlib.stack import run_stacks
 
+import logging
+
 
 def get_args():
     # fmt: off
     parser = argparse.ArgumentParser()
-    subcommands = parser.add_subparsers(dest="topcommand")
+    subcommands = parser.add_subparsers(dest="action", help="main action")
 
-    stacks = subcommands.add_parser("stacks", help="Generate stack plots")
+    common_parser = argparse.ArgumentParser(add_help=False)
+    common_parser.add_argument("--shrink", action="store_true", help="shrink output PDFs via ghostscript")
+    common_parser.add_argument("--debug", action="store_true", help="set logging level to debug")
+
+    stacks = subcommands.add_parser("stacks", help="Generate stack plots", parents=[common_parser])
     stacks.add_argument("workspace", type=str, help="TRExFitter workspace")
     stacks.add_argument("config", type=str, help="wt-stat configuration file")
     stacks.add_argument("-o", "--out-dir", type=str, help="output directory for plots")
     stacks.add_argument("--lumi", type=str, default="139", help="Integrated lumi. for text")
     stacks.add_argument("--do-postfit", action="store_true", help="produce post fit plots as well")
     stacks.add_argument("--skip-regions", type=str, default=None, help="skip regions based on regex")
-    stacks.add_argument("--shrink", action="store_true", help="shrink output PDFs via ghostscript")
     stacks.set_defaults(func=run_stacks)
 
-    pulls = subcommands.add_parser("pulls", help="pull plots")
+    pulls = subcommands.add_parser("pulls", help="pull plots", parents=[common_parser])
     pulls.add_argument("workspace", type=str, help="TRExFitter workspace")
     pulls.add_argument("config", type=str, help="TRExFitter config")
     pulls.add_argument("-o", "--out-dir", type=str, help="output directory")
     pulls.add_argument("--no-text", action="store_true", help="don't print values on plots")
-    pulls.add_argument("--shrink", action="store_true", help="shrink output PDFs via ghostscript")
     pulls.set_defaults(func=run_pulls)
     # fmt: on
 
@@ -83,8 +87,20 @@ def get_args():
 
 def cli():
     args, parser = get_args()
-    if args.topcommand is None:
+    if args.action is None:
         parser.print_help()
         return 0
+    default_level = logging.INFO
+    if args.debug:
+        default_level = logging.DEBUG
+        logging.getLogger("matplotlib.backends.backend_pdf").setLevel(logging.INFO)
+        logging.getLogger("matplotlib.font_manager").setLevel(logging.INFO)
+    # fmt: off
+    logging.basicConfig(level=default_level, format="{:20}  %(levelname)s  %(message)s".format("[%(name)s]"))
+    logging.addLevelName(logging.WARNING, "\033[1;31m{:8}\033[1;0m".format(logging.getLevelName(logging.WARNING)))
+    logging.addLevelName(logging.ERROR, "\033[1;35m{:8}\033[1;0m".format(logging.getLevelName(logging.ERROR)))
+    logging.addLevelName(logging.INFO, "\033[1;32m{:8}\033[1;0m".format(logging.getLevelName(logging.INFO)))
+    logging.addLevelName(logging.DEBUG, "\033[1;34m{:8}\033[1;0m".format(logging.getLevelName(logging.DEBUG)))
+    # fmt: on
     args.func(args)
     return 0
