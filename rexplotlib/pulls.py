@@ -1,8 +1,12 @@
 from rexplotlib.objects import NuisPar
+from rexplotlib.utils import shrink_pdf
+from pathlib import PosixPath
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
-from pathlib import PosixPath
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def get_blank_systematics(config_file):
@@ -103,4 +107,10 @@ def run_pulls(args):
 
     for category, nps in np_by_cat.items():
         fig, ax = draw_pulls(args, nps)
-        fig.savefig(f"{outd}/pulls_{category}.pdf", bbox_inches="tight")
+        out_name = f"{outd}/pulls_{category}.pdf"
+        fig.savefig(out_name, bbox_inches="tight")
+        if args.shrink:
+            shrink_pdf(out_name)
+        log.info(f"Done with {category}")
+
+    return 0

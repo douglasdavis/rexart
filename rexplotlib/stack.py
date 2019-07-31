@@ -1,5 +1,5 @@
 from rexplotlib.objects import Sample, Histogram
-from rexplotlib.drawutils import draw_ratio_with_line, draw_atlas_label, set_labels
+from rexplotlib.utils import draw_ratio_with_line, draw_atlas_label, set_labels, shrink_pdf
 from pathlib import PosixPath
 import matplotlib.pyplot as plt
 import numpy as np
@@ -107,13 +107,23 @@ def run_stacks(args):
     for region in regions:
         data, histograms, band = prefit_histograms(args, fit_name, region, samples)
         fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
-        fig.savefig(f"{outd}/preFit_{region}.pdf", rasterized=True)
+        out_name = f"{outd}/preFit_{region}.pdf"
+        fig.savefig(out_name)
         plt.close(fig)
+        if args.shrink:
+            shrink_pdf(out_name)
         log.info(f"Done with {region} prefit")
 
         if args.do_postfit:
             histograms, band = postfit_histograms(args, fit_name, region, samples)
             fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
-            fig.savefig(f"{outd}/postFit_{region}.pdf", rasterized=True)
+            axr.set_ylim([0.9, 1.1])
+            axr.set_yticks([0.95, 1.0, 1.05])
+            out_name = f"{outd}/postFit_{region}.pdf"
+            fig.savefig(out_name)
             plt.close(fig)
+            if args.shrink:
+                shrink_pdf(out_name)
             log.info(f"Done with {region} postfit")
+
+    return 0

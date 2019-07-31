@@ -66,6 +66,7 @@ def get_args():
     stacks.add_argument("--lumi", type=str, default="139", help="Integrated lumi. for text")
     stacks.add_argument("--do-postfit", action="store_true", help="produce post fit plots as well")
     stacks.add_argument("--skip-regions", type=str, default=None, help="skip regions based on regex")
+    stacks.add_argument("--shrink", action="store_true", help="shrink output PDFs via ghostscript")
     stacks.set_defaults(func=run_stacks)
 
     pulls = subcommands.add_parser("pulls", help="pull plots")
@@ -73,6 +74,7 @@ def get_args():
     pulls.add_argument("config", type=str, help="TRExFitter config")
     pulls.add_argument("-o", "--out-dir", type=str, help="output directory")
     pulls.add_argument("--no-text", action="store_true", help="don't print values on plots")
+    pulls.add_argument("--shrink", action="store_true", help="shrink output PDFs via ghostscript")
     pulls.set_defaults(func=run_pulls)
     # fmt: on
 
