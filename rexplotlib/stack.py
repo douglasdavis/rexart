@@ -12,7 +12,30 @@ log = logging.getLogger(__name__)
 
 
 def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
-    """ create a stack plot """
+    """Create a stack plot
+
+    Parameters
+    ----------
+    args : argparse.ArgumentParser
+       command line arguments
+    region : str
+       region from TRExFitter
+    data : rexplotlib.objects.Sample
+       data sample
+    histograms : List[rexplotlib.objects.Sample]
+       list of MC samples to stack
+    band : Optional[uproot_methods.classes.TGraphAsymmErrors]
+       error band
+    figsize : tuple(float, float)
+       matplotlib figure size
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+       matplotlib fiture
+    axes : tuple(matplotlib.axes.Axes, matplotlib.axes.Axes)
+       matplotlib axes (main, ratio)
+    """
     # fmt: off
     fig, (ax, axr) = plt.subplots(2, 1, sharex=True, figsize=figsize,
                                   gridspec_kw=dict(height_ratios=[3.25, 1], hspace=0.025))
@@ -58,7 +81,28 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
 
 
 def prefit_histograms(args, fit_name, region, samples):
-    """ prepare prefit histogram objects """
+    """Prepare prefit histogram objects
+
+    Parameters
+    ---------
+    args : argparse.ArgumentParser
+       command line arguments
+    fit_name : str
+       TRExFitter fit name
+    region : str
+       TRExFitter region
+    samples : List[rexplotlib.objects.Sample]
+       list of MC samples
+
+    Returns
+    -------
+    data : rexplotlib.objects.Histogram
+       data histogram
+    histograms : List[rexplotlib.objects.Histogram]
+       MC histograms
+    band : uproot_methods.classes.TGraphAsymmErrors
+       uncertainty band
+    """
     hfile = f"{args.workspace}/Histograms/{fit_name}_{region}_histos.root"
     bfile = f"{args.workspace}/Histograms/{fit_name}_{region}_preFit.root"
     band = uproot.open(bfile).get("g_totErr")
@@ -68,7 +112,29 @@ def prefit_histograms(args, fit_name, region, samples):
 
 
 def postfit_histograms(args, fit_name, region, samples):
-    """ prepare postfit histogram objects """
+    """Prepare postfit histogram objects
+
+    Parameters
+    ---------
+    args : argparse.ArgumentParser
+       command line arguments
+    fit_name : str
+       TRExFitter fit name
+    region : str
+       TRExFitter region
+    samples : List[rexplotlib.objects.Sample]
+       list of MC samples
+
+    Returns
+    -------
+    data : rexplotlib.objects.Histogram
+       data histogram
+    histograms : List[rexplotlib.objects.Histogram]
+       MC histograms
+    band : uproot_methods.classes.TGraphAsymmErrors
+       uncertainty band
+
+    """
     hfile = f"{args.workspace}/Histograms/{region}_postFit.root"
     bfile = f"{args.workspace}/Histograms/{region}_postFit.root"
     band = uproot.open(bfile).get("g_totErr_postFit")
@@ -77,7 +143,13 @@ def postfit_histograms(args, fit_name, region, samples):
 
 
 def run_stacks(args):
-    """ given command line arguments generate stack plots """
+    """Given command line arguments generate stack plots
+
+    Parameters
+    ----------
+    args : argparse.ArgumentParser
+
+    """
     with open(args.config, "r") as f:
         yaml_config = yaml.load(f, Loader=yaml.FullLoader)
     samples = [Sample(**d) for d in yaml_config["samples"]]
@@ -125,5 +197,3 @@ def run_stacks(args):
             if args.shrink:
                 shrink_pdf(out_name)
             log.info(f"Done with {region} postfit")
-
-    return 0

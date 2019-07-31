@@ -44,7 +44,22 @@ def get_blank_systematics(config_file):
 
 
 def draw_pulls(args, nps):
-    """ draw pulls from command line arguments and nuisance parameters """
+    """Draw pulls from command line arguments and nuisance parameters
+
+    Parameters
+    ----------
+    args : argparse.ArgumentParser
+       command line arguments
+    nps : list
+       list of nuisance parameters to draw
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+       matplotlib fiture
+    ax : matplotlib.axes.Axes
+       matplotlib axis
+    """
     Y_OFFSET_PT = 0.00
     Y_OFFSET_TEXT = 0.095
     Y_OFFSET_TEXT_MEAN = 0.165
@@ -83,7 +98,13 @@ def draw_pulls(args, nps):
 
 
 def run_pulls(args):
-    """ given command line arguments generate pull plots """
+    """Given command line arguments generate pull plots
+
+    Parameters
+    ----------
+    args : argparse.ArgumentParser
+
+    """
     systematics, categories = get_blank_systematics(args.config)
     fit_name = PosixPath(args.workspace).stem
     fit_result = PosixPath(f"{args.workspace}/Fits/{fit_name}.txt")
@@ -112,5 +133,3 @@ def run_pulls(args):
         if args.shrink:
             shrink_pdf(out_name)
         log.info(f"Done with {category}")
-
-    return 0

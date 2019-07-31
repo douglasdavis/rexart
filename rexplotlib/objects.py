@@ -6,7 +6,20 @@ from dataclasses import dataclass
 
 @dataclass
 class Sample:
-    """ defines a physics sample """
+    """Defines a physics sample
+
+    Attributes
+    ----------
+
+    name : str
+       name of the sample
+    signature : str
+       name of the sample on disk
+    color : str
+       matplotlib color
+    tex : str
+       LaTeX label
+    """
     name: str = "none"
     signature: str = "none"
     color: str = "black"
@@ -15,7 +28,24 @@ class Sample:
 
 @dataclass
 class NuisPar:
-    """ defines a nuisance paramter from TRExFitter """
+    """Defines a nuisance parameter from TRExFitter
+
+    Attributes
+    ----------
+
+    name : str
+       name on disk
+    mean : float
+       mean value
+    minus : float
+       minus part of the error bar
+    plus : float
+       plus part of the error bar
+    category : str
+       systematic category
+    title : str
+       a title for the plots
+    """
     name: str = "none"
     mean: float = 0
     minus: float = 0
