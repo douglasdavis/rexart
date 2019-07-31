@@ -1,3 +1,3 @@
-# rexplotlib
+# rexart
 
 Install with pip.

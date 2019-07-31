@@ -4,7 +4,7 @@ API Reference
 Classes
 -------
 
-.. currentmodule:: rexplotlib.objects
+.. currentmodule:: rexart.objects
 
 .. autoclass:: Sample
 
@@ -15,7 +15,7 @@ Classes
 Stack Plots
 -----------
 
-.. currentmodule:: rexplotlib.stack
+.. currentmodule:: rexart.stack
 
 .. autofunction:: stackem
 
@@ -28,7 +28,7 @@ Stack Plots
 Pull Plots
 ----------
 
-.. currentmodule:: rexplotlib.pulls
+.. currentmodule:: rexart.pulls
 
 .. autofunction:: get_blank_systematics
 

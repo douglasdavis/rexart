@@ -1,5 +1,5 @@
-from rexplotlib.objects import NuisPar
-from rexplotlib.utils import shrink_pdf
+from rexart.objects import NuisPar
+from rexart.utils import shrink_pdf
 from pathlib import PosixPath
 import matplotlib.pyplot as plt
 import numpy as np

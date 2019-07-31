@@ -1,5 +1,5 @@
-from rexplotlib.objects import Sample, Histogram, Template
-from rexplotlib.utils import draw_ratio_with_line, draw_atlas_label, set_labels, shrink_pdf
+from rexart.objects import Sample, Histogram, Template
+from rexart.utils import draw_ratio_with_line, draw_atlas_label, set_labels, shrink_pdf
 from pathlib import PosixPath
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,9 +20,9 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
        command line arguments
     region : str
        region from TRExFitter
-    data : rexplotlib.objects.Sample
+    data : rexart.objects.Sample
        data sample
-    histograms : List[rexplotlib.objects.Sample]
+    histograms : List[rexart.objects.Sample]
        list of MC samples to stack
     band : Optional[uproot_methods.classes.TGraphAsymmErrors]
        error band
@@ -91,14 +91,14 @@ def prefit_histograms(args, fit_name, region, samples):
        TRExFitter fit name
     region : str
        TRExFitter region
-    samples : List[rexplotlib.objects.Sample]
+    samples : List[rexart.objects.Sample]
        list of MC samples
 
     Returns
     -------
-    data : rexplotlib.objects.Histogram
+    data : rexart.objects.Histogram
        data histogram
-    histograms : List[rexplotlib.objects.Histogram]
+    histograms : List[rexart.objects.Histogram]
        MC histograms
     band : uproot_methods.classes.TGraphAsymmErrors
        uncertainty band
@@ -122,14 +122,14 @@ def postfit_histograms(args, fit_name, region, samples):
        TRExFitter fit name
     region : str
        TRExFitter region
-    samples : List[rexplotlib.objects.Sample]
+    samples : List[rexart.objects.Sample]
        list of MC samples
 
     Returns
     -------
-    data : rexplotlib.objects.Histogram
+    data : rexart.objects.Histogram
        data histogram
-    histograms : List[rexplotlib.objects.Histogram]
+    histograms : List[rexart.objects.Histogram]
        MC histograms
     band : uproot_methods.classes.TGraphAsymmErrors
        uncertainty band

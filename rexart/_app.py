@@ -50,8 +50,8 @@ matplotlib.rcParams["axes.formatter.use_mathtext"] = True
 # fmt: on
 
 import argparse
-from rexplotlib.pulls import run_pulls
-from rexplotlib.stack import run_stacks
+from rexart.pulls import run_pulls
+from rexart.stacks import run_stacks
 
 import logging
 
