@@ -87,9 +87,9 @@ def draw_pulls(args, nps):
             ax.text(mean, iyval + Y_OFFSET_TEXT_MEAN, "${}$".format(round(mean, 3)),
                     color="black", size=10, horizontalalignment="center")
             ax.text(mean + minus - 6.5 * X_OFFSET_TEXT, iyval + Y_OFFSET_TEXT, "${}$".format(round(minus, 3)),
-                    color="black", size=10, horizontalalignment="center")
+                    color="red", size=10, horizontalalignment="center")
             ax.text(mean + plus + X_OFFSET_TEXT, iyval + Y_OFFSET_TEXT, "${}$".format(round(plus, 3)),
-                    color="black", size=10)
+                    color="blue", size=10)
     # fmt: on
 
     fig.subplots_adjust(left=0.5)
