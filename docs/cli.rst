@@ -4,14 +4,14 @@ Command Line Interface
 Top-level
 ---------
 
-.. command-output:: rexpl --help
+.. command-output:: rexart --help
 
 Stack generation
 ----------------
 
-.. command-output:: rexpl stacks --help
+.. command-output:: rexart stacks --help
 
 Pulls generation
 ----------------
 
-.. command-output:: rexpl pulls --help
+.. command-output:: rexart pulls --help
