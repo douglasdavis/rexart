@@ -15,7 +15,7 @@ Classes
 Stack Plots
 -----------
 
-.. currentmodule:: rexart.stack
+.. currentmodule:: rexart.stacks
 
 .. autofunction:: stackem
 
