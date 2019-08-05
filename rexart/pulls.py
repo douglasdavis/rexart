@@ -69,7 +69,7 @@ def draw_pulls(args, nps):
     yval = np.array([(i + 1) for i in range(len(xval))])
     xerr_lo = np.array([np.minus for np in nps])
     xerr_hi = np.array([np.plus for np in nps])
-    ylabels = [np.title for np in nps]
+    ylabels = [np.title.replace("ttbar", "$t\\bar{t}$").replace("tW", "$tW$") for np in nps]
 
     fig, ax = plt.subplots(figsize=(10, len(yval) * 0.5))
     ax.fill_betweenx([-50, 500], -2, 2, color="yellow")
