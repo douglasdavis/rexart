@@ -53,17 +53,21 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
         yerrhi = np.hstack([band.yerrorshigh, band.yerrorshigh[-1]])
         expected_sum4band = np.hstack([expected_sum, expected_sum[-1]])
         axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
-                         step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
-                         zorder=99, label="Uncertainty")
-        ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
-                        step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
-                        zorder=99, label="Uncertainty")
+                         step="post", facecolor=(0, 0, 0, 0.3), linewidth=0.0, zorder=99, label="Syst. Unc.")
+        # axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
+        #                  step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
+        #                  zorder=99, label="Syst. Unc.")
+        # ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
+        #                 step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
+        #                 zorder=99, label="Syst. Unc.")
     # fmt: on
     draw_ratio_with_line(axr, data, expected_sum, expected_err)
     axr.set_ylim([0.8, 1.2])
     axr.set_yticks([0.9, 1.0, 1.1])
     axr.set_xlabel(data.mpl_title, horizontalalignment="right", x=1.0)
 
+    axr.legend(loc="upper center", frameon=True, fontsize=10)
+    #rlhandles, rllabels = axr.get_legend_handles_labels()
     ax.legend(loc="upper right")
     handles, labels = ax.get_legend_handles_labels()
     handles.insert(0, handles.pop())
