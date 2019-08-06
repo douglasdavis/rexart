@@ -78,6 +78,8 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
     extra_line1 = f"$\\sqrt{{s}}$ = 13 TeV, {args.lumi} fb$^{{-1}}$"
     extra_line2 = f"$pp\\rightarrow tW \\rightarrow e^{{\\pm}}\\mu^{{\\mp}}+{raw_region}$"
     extra_line3 = "Pre-fit"
+    if histograms[0].postfit:
+        extra_line3 = "Post-fit"
     draw_atlas_label(ax, extra_lines=[extra_line1, extra_line2, extra_line3])
 
     fig.subplots_adjust(left=0.115, bottom=0.115, right=0.965, top=0.95)
