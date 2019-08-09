@@ -7,7 +7,7 @@ Script to make matplotlib plots from TRExFitter output.
 
 # fmt: off
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use("pdf")
 import matplotlib.font_manager as font_manager
 #import os
 #if os.environ.get("HELVETICA_MPL"):
@@ -17,8 +17,9 @@ import matplotlib.font_manager as font_manager
 #    fontprop_atl = font_manager.FontProperties(fname="{}/Helvetica/Bold_Italic.ttf".format(curdir))
 #    matplotlib.rcParams["font.family"] = fontprop_reg.get_name()
 #    print(fontprop_reg.get_name())
-matplotlib.rcParams['pdf.fonttype'] = 42
-matplotlib.rcParams['ps.fonttype'] = 42
+#matplotlib.rcParams['pdf.fonttype'] = 42
+#matplotlib.rcParams['ps.fonttype'] = 42
+#matplotlib.rcParams['text.usetex'] = True
 matplotlib.rcParams["axes.labelsize"] = 14
 matplotlib.rcParams["font.size"] = 12
 matplotlib.rcParams["xtick.top"] = True
