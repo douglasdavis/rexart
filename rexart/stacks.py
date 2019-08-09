@@ -52,21 +52,19 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
         yerrlo = np.hstack([band.yerrorslow, band.yerrorslow[-1]])
         yerrhi = np.hstack([band.yerrorshigh, band.yerrorshigh[-1]])
         expected_sum4band = np.hstack([expected_sum, expected_sum[-1]])
+        ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
+                        step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
+                        linewidth=0.0, zorder=50, label="Syst. Unc.")
         axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
-                         step="post", facecolor=(0, 0, 0, 0.3), linewidth=0.0, zorder=99, label="Syst. Unc.")
-        # axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
-        #                  step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
-        #                  zorder=99, label="Syst. Unc.")
-        # ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
-        #                 step="post", hatch="///", facecolor="none", edgecolor="cornflowerblue", linewidth=0.0,
-        #                 zorder=99, label="Syst. Unc.")
+                         step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
+                         linewidth=0.0, zorder=50, label="Syst. Unc.")
     # fmt: on
     draw_ratio_with_line(axr, data, expected_sum, expected_err)
     axr.set_ylim([0.8, 1.2])
     axr.set_yticks([0.9, 1.0, 1.1])
     axr.set_xlabel(data.mpl_title, horizontalalignment="right", x=1.0)
 
-    axr.legend(loc="upper center", frameon=True, fontsize=10)
+    #axr.legend(loc="upper center", frameon=True, fontsize=10)
     #rlhandles, rllabels = axr.get_legend_handles_labels()
     ax.legend(loc="upper right")
     handles, labels = ax.get_legend_handles_labels()
@@ -75,7 +73,7 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
     ax.legend(handles, labels, loc="upper right")
 
     raw_region = region.split("reg")[-1].split("_")[0]
-    extra_line1 = f"$\\sqrt{{s}}$ = 13 TeV, {args.lumi} fb$^{{-1}}$"
+    extra_line1 = f"$\\sqrt{{s}}$ = 13 TeV, $L = {args.lumi}$ fb$^{{-1}}$"
     extra_line2 = f"$pp\\rightarrow tW \\rightarrow e^{{\\pm}}\\mu^{{\\mp}}+{raw_region}$"
     extra_line3 = "Pre-fit"
     if histograms[0].postfit:
@@ -206,7 +204,7 @@ def run_stacks(args):
         if args.do_postfit:
             histograms, band = postfit_histograms(args, fit_name, region, samples)
             fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
-            axr.set_ylim([0.9, 1.1])
+            axr.set_ylim([0.925, 1.075])
             axr.set_yticks([0.95, 1.0, 1.05])
             out_name = f"{outd}/postFit_{region}.pdf"
             fig.savefig(out_name)
