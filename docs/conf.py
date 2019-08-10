@@ -14,6 +14,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import rexart
 
 # -- Project information -----------------------------------------------------
 
@@ -21,6 +22,8 @@ project = "rexart"
 copyright = "2019, Doug Davis"
 author = "Doug Davis"
 
+version = rexart.__version__
+release = rexart.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -55,13 +58,13 @@ pygments_style = "sphinx"
 html_theme = "alabaster"
 
 html_theme_options = {
-    "description": "Numba accelerated histogramming",
+    "description": "Art from TRExFitter output",
     "github_user": "douglasdavis",
     "github_repo": "rexart",
     "github_type": "star",
     "github_count": False,
-    "font_family": '"Avenir Next", Calibri, "PT Sans", sans-serif',
-    "head_font_family": '"Avenir Next", Calibri, "PT Sans", sans-serif',
+    "font_family": '-apple-system, BlinkMacSystemFont, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    "head_font_family": '-apple-system, BlinkMacSystemFont, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ,
     "font_size": "18px",
     "page_width": "980px",
     "sidebar_width": "240px",

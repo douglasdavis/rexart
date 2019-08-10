@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def get_blank_systematics(config_file):
-    """Get list of NPs and categories from TRExFitte config file
+    """Get list of NPs and categories from TRExFitter config file
 
     Parameters
     ----------

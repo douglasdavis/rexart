@@ -3,7 +3,7 @@ rexart
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Topics
 
    cli.rst
    api.rst
