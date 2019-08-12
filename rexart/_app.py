@@ -68,11 +68,12 @@ def get_args():
 
     stacks = subcommands.add_parser("stacks", help="Generate stack plots", parents=[common_parser])
     stacks.add_argument("workspace", type=str, help="TRExFitter workspace")
-    stacks.add_argument("config", type=str, help="wt-stat configuration file")
     stacks.add_argument("-o", "--out-dir", type=str, help="output directory for plots")
     stacks.add_argument("--lumi", type=str, default="139", help="Integrated lumi. for text")
     stacks.add_argument("--do-postfit", action="store_true", help="produce post fit plots as well")
     stacks.add_argument("--skip-regions", type=str, default=None, help="skip regions based on regex")
+    stacks.add_argument("--band-style", type=str, choices=["hatch", "shade"], default="hatch", help="band art")
+    stacks.add_argument("--legend-ncol", type=int, choices=[1, 2], default=1, help="number of legend columns")
     stacks.set_defaults(func=run_stacks)
 
     pulls = subcommands.add_parser("pulls", help="pull plots", parents=[common_parser])

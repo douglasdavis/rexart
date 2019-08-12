@@ -1,5 +1,6 @@
 from rexart.objects import Sample, Histogram, Template
 from rexart.utils import draw_ratio_with_line, draw_atlas_label, set_labels, shrink_pdf
+import rexart.constants
 from pathlib import PosixPath
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,7 +12,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
+def stackem(args, region, data, histograms, template_var, band=None, figsize=(6, 5.25)):
     """Create a stack plot
 
     Parameters
@@ -24,6 +25,8 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
        data sample
     histograms : List[rexart.objects.Sample]
        list of MC samples to stack
+    template_var : str
+       name of the template variable
     band : Optional[uproot_methods.classes.TGraphAsymmErrors]
        error band
     figsize : tuple(float, float)
@@ -46,35 +49,48 @@ def stackem(args, region, data, histograms, band=None, figsize=(6, 5.25)):
             color=[h.sample.color for h in histograms], label=[h.sample.tex for h in histograms])
     ax.errorbar(data.bin_centers, data.content, yerr=data.error, fmt="ko", label="Data", zorder=999)
     set_labels(ax, histograms[0])
-    ax.set_ylim([ax.get_ylim()[0], ax.get_ylim()[1] * 1.5])
+
+    if rexart.constants.region_meta[template_var].logy:
+        ax.set_yscale("log")
+        ax.set_ylim([ax.get_ylim()[0], ax.get_ylim()[1] * 1000])
+    else:
+        ax.set_ylim([ax.get_ylim()[0], ax.get_ylim()[1] * 1.5])
 
     if band is not None:
         yerrlo = np.hstack([band.yerrorslow, band.yerrorslow[-1]])
         yerrhi = np.hstack([band.yerrorshigh, band.yerrorshigh[-1]])
         expected_sum4band = np.hstack([expected_sum, expected_sum[-1]])
-        ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
-                        step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
-                        linewidth=0.0, zorder=50, label="Syst. Unc.")
-        axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
-                         step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
-                         linewidth=0.0, zorder=50, label="Syst. Unc.")
+
+        if args.band_style == "hatch":
+            ax.fill_between(x=data.bins,y1=(expected_sum4band - yerrlo), y2=(expected_sum4band + yerrhi),
+                            step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
+                            linewidth=0.0, zorder=50, label="Syst. Unc.")
+            axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
+                             step="post", facecolor="none", hatch="////", edgecolor="cornflowerblue",
+                             linewidth=0.0, zorder=50, label="Syst. Unc.")
+        elif args.band_style == "shade":
+            axr.fill_between(x=data.bins, y1=1 - yerrlo / expected_sum4band, y2=1 + yerrhi / expected_sum4band,
+                             step="post", facecolor=(0, 0, 0, 0.33), linewidth=0.0, zorder=50, label="Syst. Unc.")
+
     # fmt: on
     draw_ratio_with_line(axr, data, expected_sum, expected_err)
     axr.set_ylim([0.8, 1.2])
     axr.set_yticks([0.9, 1.0, 1.1])
-    axr.set_xlabel(data.mpl_title, horizontalalignment="right", x=1.0)
+    axis_title = "{}{}".format(data.mpl_title, "" if data.unit == "" else f" [{data.unit}]")
+    axr.set_xlabel(axis_title, horizontalalignment="right", x=1.0)
 
-    #axr.legend(loc="upper center", frameon=True, fontsize=10)
-    #rlhandles, rllabels = axr.get_legend_handles_labels()
+    if band is not None and args.band_style == "shade":
+        axr.legend(loc="upper center", frameon=True, fontsize=8)
+
     ax.legend(loc="upper right")
     handles, labels = ax.get_legend_handles_labels()
     handles.insert(0, handles.pop())
     labels.insert(0, labels.pop())
-    ax.legend(handles, labels, loc="upper right")
+    ax.legend(handles, labels, loc="upper right", ncol=args.legend_ncol)
 
     raw_region = region.split("reg")[-1].split("_")[0]
     extra_line1 = f"$\\sqrt{{s}}$ = 13 TeV, $L = {args.lumi}$ fb$^{{-1}}$"
-    extra_line2 = f"$pp\\rightarrow tW \\rightarrow e^{{\\pm}}\\mu^{{\\mp}}+{raw_region}$"
+    extra_line2 = f"$pp\\rightarrow tW \\rightarrow e^{{\\pm}}\\mu^{{\\mp}} ({raw_region})$"
     extra_line3 = "Pre-fit"
     if histograms[0].postfit:
         extra_line3 = "Post-fit"
@@ -162,11 +178,7 @@ def run_stacks(args):
     args : argparse.ArgumentParser
 
     """
-    with open(args.config, "r") as f:
-        yaml_config = yaml.load(f, Loader=yaml.FullLoader)
-    samples = [Sample(**d) for d in yaml_config["samples"]]
-    samples.reverse()
-    templates = {t["var"]: Template(**t) for t in yaml_config["templates"]}
+    samples = rexart.constants.samples
     outd = "."
     if args.out_dir:
         outd = args.out_dir
@@ -191,9 +203,9 @@ def run_stacks(args):
     for region in regions:
         raw_region, template_variable = split_region_str(region)
         data, histograms, band = prefit_histograms(args, fit_name, region, samples)
-        data.unit = templates[template_variable].unit
-        data.mpl_title = templates[template_variable].mpl_title
-        fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
+        data.unit = rexart.constants.region_meta[template_variable].unit
+        data.mpl_title = rexart.constants.region_meta[template_variable].title
+        fig, (ax, axr) = stackem(args, region, data, histograms, template_variable, band=band)
         out_name = f"{outd}/preFit_{region}.pdf"
         fig.savefig(out_name)
         plt.close(fig)
@@ -203,7 +215,7 @@ def run_stacks(args):
 
         if args.do_postfit:
             histograms, band = postfit_histograms(args, fit_name, region, samples)
-            fig, (ax, axr) = stackem(args, region, data, histograms, band=band)
+            fig, (ax, axr) = stackem(args, region, data, histograms, template_variable, band=band)
             axr.set_ylim([0.925, 1.075])
             axr.set_yticks([0.95, 1.0, 1.05])
             out_name = f"{outd}/postFit_{region}.pdf"
