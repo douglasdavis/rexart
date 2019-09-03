@@ -65,9 +65,9 @@ html_theme_options = {
     "github_count": False,
     "font_family": '-apple-system, BlinkMacSystemFont, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     "head_font_family": '-apple-system, BlinkMacSystemFont, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ,
-    "font_size": "18px",
-    "page_width": "980px",
-    "sidebar_width": "240px",
+    "font_size": "14px",
+    "page_width": "1080px",
+    "sidebar_width": "280px",
     "fixed_sidebar": True,
     "show_relbars": True,
 }
