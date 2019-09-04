@@ -179,11 +179,13 @@ def run_stacks(args):
 
     """
     samples = rexart.constants.samples
-    outd = "."
-    if args.out_dir:
+
+    if args.out_dir is None:
+        outd = f"{args.workspace}/MPL"
+    else:
         outd = args.out_dir
-        if outd != ".":
-            PosixPath(args.out_dir).mkdir(parents=True, exist_ok=True)
+    if outd != ".":
+        PosixPath(outd).mkdir(parents=True, exist_ok=True)
 
     fit_name = PosixPath(args.workspace).stem
     hfiledir = PosixPath(f"{fit_name}/Histograms")

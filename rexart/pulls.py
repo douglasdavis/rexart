@@ -120,11 +120,12 @@ def run_pulls(args):
             systematics[elements[0]].minus = float(elements[3])
             np_by_cat[systematics[elements[0]].category].append(systematics[elements[0]])
 
-    outd = "."
-    if args.out_dir:
+    if args.out_dir is None:
+        outd = f"{args.workspace}/MPL"
+    else:
         outd = args.out_dir
-        if outd != ".":
-            PosixPath(args.out_dir).mkdir(parents=True, exist_ok=True)
+    if outd != ".":
+        PosixPath(outd).mkdir(parents=True, exist_ok=True)
 
     for category, nps in np_by_cat.items():
         fig, ax = draw_pulls(args, nps)
